@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AVR Regulator Catalog — Cross-Reference &amp; Specifications</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12151A;
+    --panel:#1A1F26;
+    --panel-2:#1F252D;
+    --line:#2B323C;
+    --line-soft:#232933;
+    --ink:#ECEAE3;
+    --ink-dim:#B7BDC7;
+    --muted:#7E8794;
+    --copper:#E0983D;
+    --copper-dim:#8C6633;
+    --teal:#5AB3A8;
+    --danger:#C96257;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+
+  /* subtle circuit-trace background texture */
+  .traces{
+    position:absolute; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 85%);
+    opacity:0.5;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:50;
+    background:rgba(18,21,26,0.92);
+    backdrop-filter:blur(8px);
+  }
+  .header-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+  }
+  .brandmark{display:flex; align-items:center; gap:10px;}
+  .brandmark svg{display:block;}
+  .brandmark .name{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:17px;}
+  .brandmark .name b{color:var(--copper); font-weight:600;}
+  nav{display:flex; gap:28px; font-size:14px; color:var(--ink-dim);}
+  nav a{text-decoration:none; transition:color .15s ease;}
+  nav a:hover{color:var(--ink);}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative; padding:76px 0 54px; overflow:hidden;}
+  .hero .wrap{position:relative; z-index:1;}
+  .eyebrow-line{
+    display:flex; align-items:center; gap:10px;
+    color:var(--muted); font-size:13px; margin-bottom:22px;
+  }
+  .eyebrow-line .dot{width:6px; height:6px; border-radius:50%; background:var(--copper);}
+  h1.hero-title{
+    font-size:44px; line-height:1.12; max-width:760px; color:var(--ink);
+  }
+  .hero-title .accent{color:var(--copper);}
+  .hero-sub{
+    max-width:600px; color:var(--ink-dim); font-size:16px; margin-top:18px;
+  }
+
+  .search-panel{
+    margin-top:38px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:20px;
+  }
+  .search-row{display:flex; gap:10px; align-items:center;}
+  .search-row svg{flex:none; color:var(--muted);}
+  #searchInput{
+    flex:1; background:transparent; border:none; outline:none;
+    color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:18px;
+    padding:10px 0;
+  }
+  #searchInput::placeholder{color:var(--muted); font-family:'Inter',sans-serif;}
+  .search-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:14px; padding-top:14px; border-top:1px solid var(--line-soft);
+    font-size:13px; color:var(--muted);
+  }
+  #resultCount b{color:var(--ink);}
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    border:1px solid var(--line); background:var(--panel-2); color:var(--ink-dim);
+    padding:6px 12px; border-radius:20px; font-size:12.5px; cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; transition:.15s ease;
+  }
+  .chip:hover{border-color:var(--copper-dim); color:var(--ink);}
+  .chip.active{background:var(--copper); border-color:var(--copper); color:#1A1207;}
+
+  /* ---------- stat strip ---------- */
+  .stat-strip{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:var(--panel);
+  }
+  .stat-strip .wrap{
+    display:grid; grid-template-columns:repeat(4,1fr);
+  }
+  .stat{
+    padding:26px 0; text-align:left;
+    border-left:1px solid var(--line);
+  }
+  .stat:first-child{border-left:none;}
+  .stat .num{font-family:'Space Grotesk',sans-serif; font-size:28px; color:var(--copper); font-weight:600;}
+  .stat .label{font-size:12.5px; color:var(--muted); margin-top:4px;}
+
+  /* ---------- generic section ---------- */
+  section{padding:64px 0;}
+  .section-head{max-width:600px; margin-bottom:34px;}
+  .section-head .kicker{font-size:13px; color:var(--copper); font-family:'IBM Plex Mono',monospace; margin-bottom:8px;}
+  .section-head h2{font-size:28px; color:var(--ink);}
+  .section-head p{color:var(--ink-dim); margin-top:10px; font-size:15px;}
+
+  /* quality grid */
+  .quality-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  .quality-card{background:var(--panel); padding:22px 20px;}
+  .quality-card .tag{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--copper); margin-bottom:10px;}
+  .quality-card h3{font-size:15.5px; color:var(--ink); margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:600;}
+  .quality-card p{font-size:13.5px; color:var(--muted); margin:0;}
+
+  /* materials list */
+  .materials{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;
+  }
+  .material-item{
+    background:var(--panel); padding:16px 20px; display:flex; gap:14px; align-items:flex-start;
+  }
+  .material-item .idx{
+    font-family:'IBM Plex Mono',monospace; color:var(--copper-dim); font-size:13px; flex:none; padding-top:1px;
+  }
+  .material-item p{margin:0; font-size:14px; color:var(--ink-dim);}
+
+  /* catalog */
+  #catalog{padding-top:0;}
+  .catalog-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+    gap:14px; margin-top:28px;
+  }
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:18px 18px 16px; transition:border-color .15s ease;
+  }
+  .card:hover{border-color:var(--copper-dim);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;}
+  .card-model{font-family:'IBM Plex Mono',monospace; font-size:17px; font-weight:600; color:var(--ink);}
+  .card-tags{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
+  .tag-brand{
+    font-size:11px; padding:3px 8px; border-radius:5px; white-space:nowrap;
+    background:rgba(224,152,61,0.12); color:var(--copper); border:1px solid rgba(224,152,61,0.28);
+  }
+  .tag-type{
+    font-size:11px; padding:3px 8px; border-radius:5px; white-space:nowrap;
+    background:rgba(90,179,168,0.1); color:var(--teal); border:1px solid rgba(90,179,168,0.25);
+  }
+  .card-stats{display:flex; gap:16px; margin-bottom:10px; flex-wrap:wrap;}
+  .card-stats div{font-size:12px; color:var(--muted);}
+  .card-stats b{display:block; color:var(--ink-dim); font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:500;}
+  .card-params{list-style:none; margin:0 0 10px; padding:0; border-top:1px solid var(--line-soft); padding-top:10px;}
+  .card-params li{font-size:12.5px; color:var(--ink-dim); padding:2px 0; padding-left:12px; position:relative;}
+  .card-params li:before{content:"—"; position:absolute; left:0; color:var(--muted);}
+  .card-foot{display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); border-top:1px solid var(--line-soft); padding-top:10px;}
+  .card-foot span b{color:var(--ink-dim); font-weight:500;}
+  .no-results{
+    grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--muted);
+  }
+  .no-results .big{font-family:'Space Grotesk',sans-serif; font-size:20px; color:var(--ink-dim); margin-bottom:8px;}
+
+  /* accordion (setup / troubleshooting) */
+  .accordion{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--panel);}
+  .acc-item + .acc-item{border-top:1px solid var(--line);}
+  .acc-head{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:18px 20px; cursor:pointer; user-select:none;
+  }
+  .acc-head h3{font-size:15px; font-weight:600; color:var(--ink); font-family:'Inter',sans-serif;}
+  .acc-head .plus{color:var(--copper); font-family:'IBM Plex Mono',monospace; font-size:18px; transition:transform .2s ease;}
+  .acc-item.open .plus{transform:rotate(45deg);}
+  .acc-body{max-height:0; overflow:hidden; transition:max-height .25s ease;}
+  .acc-body-inner{padding:0 20px 22px; color:var(--ink-dim); font-size:14px;}
+
+  table.spec-table{width:100%; border-collapse:collapse; font-size:13.5px; margin-top:6px;}
+  table.spec-table th{
+    text-align:left; color:var(--muted); font-weight:500; font-size:12px;
+    padding:8px 10px; border-bottom:1px solid var(--line); font-family:'IBM Plex Mono',monospace;
+  }
+  table.spec-table td{padding:10px; border-bottom:1px solid var(--line-soft); color:var(--ink-dim); vertical-align:top;}
+  table.spec-table tr:last-child td{border-bottom:none;}
+
+  .steps{margin:0; padding:0; list-style:none; counter-reset:step;}
+  .steps li{
+    counter-increment:step; padding:10px 0 10px 34px; position:relative; font-size:14px; color:var(--ink-dim);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .steps li:last-child{border-bottom:none;}
+  .steps li:before{
+    content:counter(step); position:absolute; left:0; top:9px;
+    width:20px; height:20px; border-radius:5px; background:var(--panel-2); border:1px solid var(--line);
+    color:var(--copper); font-family:'IBM Plex Mono',monospace; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  footer{border-top:1px solid var(--line); padding:36px 0; margin-top:20px;}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;}
+  footer .fine{font-size:12.5px; color:var(--muted); max-width:560px;}
+  footer .brandmark .name{font-size:14px;}
+
+  @media (max-width:860px){
+    h1.hero-title{font-size:32px;}
+    .quality-grid{grid-template-columns:1fr 1fr;}
+    .materials{grid-template-columns:1fr;}
+    .stat-strip .wrap{grid-template-columns:1fr 1fr;}
+    .stat:nth-child(3){border-left:none;}
+    nav{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brandmark">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+        <rect x="1" y="1" width="24" height="24" rx="5" stroke="#E0983D" stroke-width="1.4"/>
+        <path d="M8 17L12 7L14 13L18 9" stroke="#E0983D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="name">AVR <b>Catalog</b></div>
+    </div>
+    <nav>
+      <a href="#catalog">Model catalog</a>
+      <a href="#quality">Quality &amp; testing</a>
+      <a href="#support">Setup &amp; troubleshooting</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="traces"></div>
+  <div class="wrap">
+    <div class="eyebrow-line"><span class="dot"></span>Automatic Voltage Regulator reference</div>
+    <h1 class="hero-title">Find the right AVR by <span class="accent">model number</span> — specs, cross-references and replacements in one place.</h1>
+    <p class="hero-sub">A working cross-reference of 79 automatic voltage regulators spanning Stamford, Leroy-Somer, Mecc Alte, Marathon, Marelli, CAT, KUBOTA, KUTAI and more — built from our fitment and adaptation records.</p>
+
+    <div class="search-panel">
+      <div class="search-row">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#7E8794" stroke-width="1.8"/><path d="M21 21L16.5 16.5" stroke="#7E8794" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="searchInput" type="text" placeholder="Search a model, brand, or the unit it replaces — e.g. SX460, Leroy-Somer, R450" autocomplete="off">
+      </div>
+      <div class="search-meta">
+        <div id="resultCount"><b>79</b> regulators</div>
+        <div class="chip-row" id="chipRow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stat-strip">
+  <div class="wrap">
+    <div class="stat"><div class="num">79</div><div class="label">AVR models tracked</div></div>
+    <div class="stat"><div class="num">10+</div><div class="label">OEM brands cross-referenced</div></div>
+    <div class="stat"><div class="num">&lt;1%</div><div class="label">typical voltage regulation</div></div>
+    <div class="stat"><div class="num">85°C</div><div class="label">high-temperature aging standard</div></div>
+  </div>
+</div>
+
+<section id="quality">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">01 — Quality control</div>
+      <h2>Every unit is tested before it ships.</h2>
+      <p>Four checkpoints run on the production line, from component placement to full-load aging.</p>
+    </div>
+    <div class="quality-grid">
+      <div class="quality-card">
+        <div class="tag">AOI</div>
+        <h3>Automated optical inspection</h3>
+        <p>Detects misaligned components, missing parts, insufficient solder and cold joints on every board, cutting defects and raising reliability.</p>
+      </div>
+      <div class="quality-card">
+        <div class="tag">THERMAL</div>
+        <h3>High/low-temperature testing</h3>
+        <p>Military-spec cycle: every unit runs 4 hours at 85°C and is cold-soak tested at −45°C before it leaves the factory.</p>
+      </div>
+      <div class="quality-card">
+        <div class="tag">PARALLEL</div>
+        <h3>Parallel-operation testing</h3>
+        <p>Every model rated for parallel operation is tested in a multi-unit rig to confirm stable, synchronized output in the field.</p>
+      </div>
+      <div class="quality-card">
+        <div class="tag">AGING</div>
+        <h3>8-hour high-temperature aging</h3>
+        <p>Run at the AVR's maximum rated power and sampling voltage under NI LabVIEW automated monitoring, logging current, output voltage and ambient temperature throughout.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">02 — Build quality</div>
+      <h2>What goes into the board.</h2>
+      <p>Component choices that hold up in engine rooms and marine environments.</p>
+    </div>
+    <div class="materials" id="materialsGrid"></div>
+  </div>
+</section>
+
+<section id="catalog">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">03 — Model catalog</div>
+      <h2>Browse or search all 79 regulators.</h2>
+      <p>Use the search bar above, or scroll — each card lists sensing/power input, output, regulation, fitment and known replacements.</p>
+    </div>
+    <div class="catalog-grid" id="catalogGrid"></div>
+  </div>
+</section>
+
+<section id="support">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">04 — Setup &amp; troubleshooting</div>
+      <h2>Commissioning and fault-finding reference.</h2>
+      <p>General guidance that applies across the self-excited AVR range. Always follow the instructions for the specific model in hand.</p>
+    </div>
+    <div class="accordion" id="accordion"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brandmark">
+      <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
+        <rect x="1" y="1" width="24" height="24" rx="5" stroke="#5A6270" stroke-width="1.4"/>
+        <path d="M8 17L12 7L14 13L18 9" stroke="#5A6270" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="name" style="color:var(--muted)">AVR Catalog</div>
+    </div>
+    <p class="fine">Specifications are drawn from our internal fitment records and manufacturers' published data; always confirm against the nameplate and instruction sheet of the generator before installing a replacement AVR. Parallel installations: pair with the EP200 paralleling module.</p>
+  </div>
+</footer>
+
+<script>
+const MODELS = [{"model": "GAVR-8A", "brand": "", "type": "", "params": ["Sensing/Power Input: 110/220/400V AC", "Power Input: 95-270VAC, single-phase, 2-wire", "Field Output: max 95V DC at 240VAC input", "Current: 4A continuous, 8A for 10s (non-continuous)", "Voltage Regulation: <±1%", "System Requirement: brushless generators up to 100kW"], "compatible": "Universal", "power_range": "20-100kW", "current": "5A", "special": "", "replaces": "SX460 / R230"}, {"model": "GAVR-12A", "brand": "", "type": "", "params": ["Sensing/Power Input: 190-240VAC, single-phase 2-wire, selectable via jumper link", "Field Output: max 95V DC at 207VAC input", "Current: 12A continuous, 10A for 10s", "Voltage Regulation: <±1%"], "compatible": "Universal", "power_range": "20-100kW", "current": "", "special": "", "replaces": "SX460 / R230"}, {"model": "GAVR-15A", "brand": "", "type": "", "params": ["Sensing/Power Input: 170-270V AC", "Voltage Regulation: <±0.5%", "Application: 220/380/400VAC brushless generators", "Output: max 15A DC, 95V", "50/60Hz selectable via jumper link"], "compatible": "Universal", "power_range": "20-300kW", "current": "10A", "special": "Basic parallel operation", "replaces": "SX460 / R230"}, {"model": "GAVR-15B", "brand": "", "type": "", "params": ["Sensing/Power Input: 170-270V AC", "Voltage Regulation: <±0.5%", "Application: 220/380/400VAC brushless generators", "Output: max 15A DC, 95V", "50/60Hz selectable via jumper link", "Under-frequency protection with soft voltage build-up", "High breaking-capacity fuse protection"], "compatible": "Universal", "power_range": "20-300kW", "current": "10A", "special": "Basic parallel operation, black potentiometer", "replaces": "SX460 / R230"}, {"model": "GAVR-20A", "brand": "", "type": "", "params": ["Sensing/Power Input: 170-270V AC", "Voltage Regulation: <±0.5%", "Application: 220/380/400VAC brushless generators", "Output: max 20A DC, 95V"], "compatible": "Universal", "power_range": "20-500kW", "current": "13A", "special": "Basic parallel operation; also usable on 20-50kW brush-type gensets", "replaces": "SX460 / R230"}, {"model": "GAVR-20B", "brand": "", "type": "", "params": ["Sensing/Power Input: 170-270V AC", "Voltage Regulation: <±0.5%", "Application: 220/380/400VAC brushless generators", "Output: max 20A DC, 95V"], "compatible": "Universal", "power_range": "20-500kW", "current": "13A", "special": "Basic parallel operation, black potentiometer; also usable on 20-50kW brush-type gensets", "replaces": "SX460 / R230"}, {"model": "GAVR-35A", "brand": "", "type": "", "params": ["Sensing/Power Input: 170-270V AC", "Voltage Regulation: <±0.5%", "Application: 220VAC brushless generators", "Output: max 35A DC, 95V"], "compatible": "", "power_range": "", "current": "", "special": "Max output 35A DC, 95V", "replaces": ""}, {"model": "GAVR-50A", "brand": "", "type": "", "params": ["Sensing/Power Input: 170-270V AC", "Voltage Regulation: <±0.5%", "Application: 220VAC brushless generators", "Output: max 50A DC, 95V"], "compatible": "Universal, high-current", "power_range": "20-500kW", "current": "", "special": "", "replaces": ""}, {"model": "GAVR-75A", "brand": "", "type": "", "params": ["Sensing/Power Input: T,N = 170-265VAC, 50/60Hz, single-phase 2-wire, selectable via jumper link", "Field Output: max 90V DC at 207VAC input", "Current: 15A, 95VDC (10s)", "External 1kΩ 1/2W potentiometer gives +8% adjustment", "Built-in frequency-drop protection: output voltage falls with engine speed"], "compatible": "Universal, high-current", "power_range": "20-500kW", "current": "", "special": "For brush-type generators", "replaces": ""}, {"model": "AS440", "brand": "", "type": "", "params": ["Sensing/Power Input: 120(95-132)/240(190-264)VAC, single-phase 2-wire", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "HC4 / HC5", "power_range": "85kVA-675kVA", "current": "", "special": "Over-excitation protection", "replaces": "SX460 / SX440"}, {"model": "AS480", "brand": "", "type": "", "params": ["Sensing/Power Input: 120(95-132)/240(190-264)VAC, single-phase 2-wire, selectable via jumper link", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "P0 / P1", "power_range": "50-1000kW", "current": "", "special": "Over-excitation protection", "replaces": "AS440 / SX460 / SX440"}, {"model": "AS540", "brand": "", "type": "", "params": ["Sensing/Power Input: 120(95-130)/240(190-265)VAC, single-phase 2-wire, selectable via jumper link", "Field Output: max 82V DC at 200VAC input", "Current: 4A continuous, 75A for 10s", "Voltage Regulation: <±1%"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "SX460", "brand": "Stamford", "type": "Self-excited AVR", "params": ["Sensing/Power Input: 120(95-132)/240(190-264)VAC, single-phase 2-wire, selectable via jumper link", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1%", "System Requirement: brushless generators up to 80kW"], "compatible": "UC22 / UC27", "power_range": "85kVA-312kVA", "current": "4A", "special": "", "replaces": ""}, {"model": "SX460-A", "brand": "Stamford", "type": "Self-excited AVR", "params": ["Sensing/Power Input: 120(95-132)/240(190-264)VAC, single-phase 2-wire, selectable via jumper link", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1%", "System Requirement: brushless generators up to 80kW"], "compatible": "UC22 / UC27", "power_range": "85kVA-312kVA", "current": "4A", "special": "", "replaces": ""}, {"model": "SX440", "brand": "Stamford", "type": "Self-excited AVR", "params": ["Sensing/Power Input: 190-264V AC, single-phase 2-wire", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)", "System Requirement: brushless generators up to 500kW"], "compatible": "UC22 / UC27", "power_range": "50-1000kW", "current": "4A", "special": "Auxiliary parallel-operation input", "replaces": "AS440 / AS480 / SX460 / MX341 / XM321"}, {"model": "SX440-A", "brand": "Stamford", "type": "Self-excited AVR", "params": ["Sensing/Power Input: 190-264V AC, single-phase 2-wire, selectable via jumper link", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "UC22 / UC27", "power_range": "50-1000kW", "current": "4A", "special": "Auxiliary parallel-operation input", "replaces": "AS440 / AS480 / SX460 / MX341 / XM321"}, {"model": "MX341", "brand": "", "type": "PMG-excited AVR", "params": ["Sensing Input: 190-264VAC", "Power Input: 170-220VAC, three-phase 3-wire", "Field Output: max 90V DC at 207VAC input", "Current: 4A continuous, 10A for 10s", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "P6 / P7", "power_range": "85kVA-2800kVA", "current": "", "special": "Supports PMG excitation / parallel operation / over-excitation protection / 3-phase power", "replaces": ""}, {"model": "MX341-A", "brand": "", "type": "PMG-excited AVR", "params": ["Specification identical to MX341"], "compatible": "P6 / P7", "power_range": "85kVA-2800kVA", "current": "", "special": "Supports PMG excitation / parallel operation / over-excitation protection / 3-phase power", "replaces": ""}, {"model": "MX321", "brand": "Stamford", "type": "", "params": ["Power Input: 170-220VAC, three-phase, 3A (PMG)", "Sensing: 190-250V, 2-phase or 3-phase", "Output: 120V DC (max)", "Current: 3-7A continuous; 6A for 10s (surge)", "Protection: built-in low-speed, over-excitation, over-voltage, over-current, LAM", "Regulation: better than 0.5%"], "compatible": "MV7", "power_range": "85-3000kVA", "current": "", "special": "Supports PMG excitation / parallel operation / over-excitation protection / soft-start / over-voltage protection / 3-phase voltage sensing / 3-phase power", "replaces": ""}, {"model": "MX321-A", "brand": "Stamford", "type": "", "params": ["Specification identical to MX321"], "compatible": "MV7", "power_range": "85-3000kVA", "current": "", "special": "Supports PMG excitation / parallel operation / over-excitation protection / soft-start / over-voltage protection / 3-phase voltage sensing / 3-phase power", "replaces": ""}, {"model": "SX450", "brand": "Stamford", "type": "", "params": [], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": "MX341"}, {"model": "MX450", "brand": "Stamford", "type": "", "params": ["Sensing/Power Input: 190-264V AC, single-phase 2-wire", "Field Output: max 90V DC", "Current: 4A continuous", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": "MX341"}, {"model": "R120", "brand": "Leroy-Somer", "type": "", "params": ["Sensing/Power Input: 27VAC, single-phase, 10%", "Field Output: max 95V DC at 240VAC input", "Current: 4A continuous, 6A for 30s (non-continuous)", "Operating Temperature: -20°C to 70°C"], "compatible": "TAL40 / TAL42 / TAL44", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "R220", "brand": "Leroy-Somer", "type": "", "params": [], "compatible": "LSA40 / LSA42.3", "power_range": "20-100kW", "current": "", "special": "", "replaces": "R230 / R250"}, {"model": "R230", "brand": "Leroy-Somer", "type": "", "params": ["Power Input: 120(90-140)VAC, single-phase 2-wire", "Field Output: max 100V DC at 120V input, 8A continuous, 10A for 6s (non-continuous)", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "", "power_range": "20-100kW", "current": "", "special": "", "replaces": "R220 / R250"}, {"model": "R250", "brand": "Leroy-Somer", "type": "", "params": ["Sensing/Power Input: 120(95-140)V AC, single-phase 2-wire, selectable via jumper link", "Field Output: max 160V DC at 120VAC input, max 8A", "Voltage Regulation: <±0.5% RMS (within 4% engine-speed variation)"], "compatible": "LSA44.3 / LSA46.3 / LSA47.2 / LAL46 / LAL47 / TAL49", "power_range": "20-100kW", "current": "", "special": "", "replaces": "R220 / R250"}, {"model": "R438", "brand": "Leroy-Somer", "type": "", "params": ["Sensing Input: 95-480VAC", "Power Input: 40-150VAC, three-phase", "Field Output: max 160V DC at 120VAC input, max 10A", "Voltage Regulation: <±0.5% RMS (within 4% engine-speed variation)"], "compatible": "LSA40 / LSA42.3 / LSA47.2 / TAL46 / TAL47 / TAL44", "power_range": "20-200kW", "current": "", "special": "Supports PMG", "replaces": ""}, {"model": "R448", "brand": "Leroy-Somer", "type": "", "params": [], "compatible": "", "power_range": "20-500kW", "current": "", "special": "Supports PMG", "replaces": ""}, {"model": "R449", "brand": "Leroy-Somer", "type": "", "params": ["Voltage Regulation: ±0.5%", "U/F (under-frequency) function", "LAM function", "Response Time: 500ms", "Rated Excitation Current: 7A", "Max Excitation Current: 15A for 10s"], "compatible": "LSA51.2 / LSA52.3 / LSA53.2 / LSA54.2", "power_range": "20-800kW", "current": "", "special": "Supports PMG", "replaces": "R448"}, {"model": "R450", "brand": "Leroy-Somer", "type": "", "params": ["Max Supply Voltage: 150V, 50/60Hz", "Rated Overload Current: 10A", "On short-circuit, excitation current falls below 1A within 10s", "F1 on X1 line, F2 on line 2, 10A; slow build-up 250V", "0-110V terminal = 95-140V; 0-220V terminal = 170-260V; 0-380V terminal = 340-528V"], "compatible": "LSA40 / LSA42.3 / LSA44.3 / LSA46.3 / LSA47.2 / LSA49.3 / LSA50.2 / TAL46", "power_range": "10-500kW", "current": "", "special": "Supports PMG / over-excitation protection", "replaces": "R448 / R449"}, {"model": "R450M", "brand": "Leroy-Somer", "type": "", "params": [], "compatible": "", "power_range": "20-500kW", "current": "", "special": "Supports PMG / over-excitation protection", "replaces": "R448 / R449"}, {"model": "R450T", "brand": "Leroy-Somer", "type": "", "params": ["Sensing/Power Input: 95-480VAC", "Power Input: 40-150VAC, three-phase", "Field Output: max 160V DC at 120VAC input, max 10A", "Voltage Regulation: <±1% RMS (within 4% engine-speed variation)"], "compatible": "", "power_range": "20-500kW", "current": "", "special": "Supports PMG / over-excitation protection / 3-phase voltage sensing", "replaces": "R448 / R449"}, {"model": "R726", "brand": "Leroy-Somer", "type": "", "params": [], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "R731", "brand": "Leroy-Somer", "type": "", "params": ["Voltage Regulation: approx. ±0.5%", "Sensing/Supply Range: 85-139V (50/60Hz)", "Transient response: ±20% voltage swing, 500ms fast recovery", "P1: voltage set-point; P2: stability set-point", "8A fuse protection, slow-blow (supports 10A for 10s)"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "SR7", "brand": "Mecc Alte", "type": "", "params": ["Sensing Input: 80-350VAC", "Sensing Type: single-phase", "Power Input: 80-270VAC", "Max Field Voltage: 63-220VAC", "Current: 6A continuous"], "compatible": "", "power_range": "10-200kW", "current": "", "special": "Remote voltage adjustment", "replaces": ""}, {"model": "UVR6", "brand": "Mecc Alte", "type": "", "params": ["Sensing Input: 220-480VAC", "Power Input: 80-270VAC", "Sensing: single-phase or three-phase", "Max Field Voltage: 63-220VAC", "Current: 6A continuous, 10A for 10s", "Frequency Compensation: built-in, output voltage falls with engine speed", "Regulation: better than 1%"], "compatible": "", "power_range": "10-200kW", "current": "", "special": "Both three-phase and single-phase sensing supported", "replaces": "SR7"}, {"model": "DSR", "brand": "Mecc Alte", "type": "Digital AVR", "params": ["Adjustable Voltage: 40-270VAC", "Sensing Type: single-phase", "Frequency: 15-72Hz", "Current: 5A DC continuous"], "compatible": "28-32-34 series", "power_range": "5kVA-208kVA", "current": "", "special": "", "replaces": ""}, {"model": "DER1", "brand": "Mecc Alte", "type": "Digital AVR", "params": ["Adjustable Voltage: 40-270VAC", "Sensing: single-phase or three-phase", "Frequency: 15-72Hz", "Current: 5A DC continuous"], "compatible": "DER1 on 28-32-34 series (on request); standard on 40-43-46 series", "power_range": "5kVA-3410kVA", "current": "", "special": "Automatic single/three-phase sensing detection, greater flexibility for remote voltage control, soft-start", "replaces": ""}, {"model": "M16FA655A", "brand": "Marelli", "type": "", "params": ["Sensing Range: 170-277VAC", "Sensing Type: single-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 100VAC", "Max Current: 5A"], "compatible": "MJB series", "power_range": "Frame size 160-225", "current": "", "special": "Single-phase", "replaces": ""}, {"model": "M40FA640A", "brand": "Marelli", "type": "", "params": ["Sensing Range: 170-277VAC", "Sensing Type: single-phase, three-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 100VAC", "Max Current: 8A"], "compatible": "MJB series", "power_range": "Frame size 160-500, 10-2000kVA", "current": "", "special": "Single/three-phase", "replaces": ""}, {"model": "SE350", "brand": "Marathon", "type": "Analog AVR", "params": ["Sensing/Power Input: 190-240VAC", "Power Voltage: 75V DC", "Current: 3.5A continuous"], "compatible": "MAGNA PLUS", "power_range": "5-420kVA", "current": "", "special": "", "replaces": ""}, {"model": "DVR2000E", "brand": "Marathon", "type": "Digital AVR", "params": ["Sensing Input: 100-600VAC", "Sensing Type: single-phase, three-phase", "Power Input: 180-240V DC (120-300Hz)", "Current: 3A continuous"], "compatible": "MAGNA MAX", "power_range": "140-2400kVA", "current": "", "special": "", "replaces": ""}, {"model": "WT-2", "brand": "ENGGA", "type": "", "params": ["Sensing Range: 70-480VAC", "Sensing Type: single-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 100VAC", "Max Current: 6A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "WT-3", "brand": "ENGGA", "type": "", "params": ["Sensing Range: 70-480VAC", "Sensing Type: single-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 100VAC", "Max Current: 6A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "VR6", "brand": "CAT (Caterpillar)", "type": "", "params": ["Output: 12A DC @ 62V DC", "Sensing Type: single-phase, three-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 65VAC", "Max Current: 12A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "K65-12B", "brand": "CAT (Caterpillar)", "type": "", "params": ["Output: 12A DC @ 62V DC", "Sensing Type: single-phase, three-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 65VAC", "Max Current: 12A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "K125-10B", "brand": "CAT (Caterpillar)", "type": "", "params": ["Output: 10A DC @ 125V DC", "Sensing Type: single-phase, three-phase", "Power Voltage: 170-270VAC", "Max Field Voltage: 65VAC", "Max Current: 12A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EA63-4", "brand": "KUTAI", "type": "", "params": ["Sensing Input: 120(90-139)/240(190-277)", "Sensing Type: single-phase", "Power Input: 95-139VAC ±10%, single-phase 2-wire", "Power Voltage: max 63V DC", "Current: 4A continuous"], "compatible": "Replacement for Basler AVC63-4A", "power_range": "", "current": "", "special": "63Vdc / 4Amp", "replaces": ""}, {"model": "EA15A", "brand": "", "type": "", "params": ["Sensing Input: 190-500VAC", "Sensing Type: single-phase", "Power Input: 100-300VAC, single-phase 2-wire", "Power Voltage: 90-240", "Current: 15A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EA16", "brand": "", "type": "", "params": ["Sensing Input: 170-510VAC", "Sensing Type: single-phase", "Power Input: 60-300VAC, single-phase 2-wire", "Power Voltage: 90-240", "Current: 16A continuous"], "compatible": "", "power_range": "", "current": "", "special": "Parallel operation / over-excitation protection", "replaces": ""}, {"model": "EA440-T", "brand": "", "type": "", "params": ["Sensing Input: 90-520VAC", "Sensing Type: single-phase", "Power Input: 90-207VAC, single-phase 2-wire", "Current: 4A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EA04C", "brand": "", "type": "", "params": ["Sensing Input: 160-265VAC / 300-550VAC", "Sensing Type: single-phase", "Power Input: 90-300VAC, single-phase 2-wire", "Power Voltage: max 63V DC / 240VAC", "Current: 4A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EA05A", "brand": "", "type": "", "params": ["Sensing Input: 220/380/440VAC", "Sensing Type: single-phase", "Power Input: 100-300VAC, single-phase", "Power Voltage: max 63V DC / 240VAC", "Current: 5A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EA05AF", "brand": "", "type": "", "params": ["Power Input: 160-260VAC", "Sensing Type: single-phase", "Power Voltage: max 170V DC / 240VAC", "Current: 5A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EA63-2.5", "brand": "", "type": "", "params": ["Power Input: 120(90-130)/240(180-260)VAC", "Sensing Type: single-phase", "Power Voltage: max 50V DC / 120VAC", "Current: 2.5A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "AEC42-7", "brand": "", "type": "", "params": ["Sensing/Power Input: 180-277VAC", "Power Input: 40-150VAC, single-phase", "Voltage: max 63V DC", "Current: 4A continuous"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "AVR63-4A", "brand": "", "type": "", "params": ["Input Voltage: 95-139VAC", "Sensing Input: 95-139VAC or 190-277VAC", "Output: 63V DC"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "AVR63-7", "brand": "", "type": "", "params": ["Input Voltage: 170-305VAC", "Sensing Input: 170-264VAC (variant AVC63-7F: 380-480VAC)", "Output: 63V"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "DECS100-B11", "brand": "", "type": "", "params": ["Voltage: 88-250VAC", "Frequency: 50-400Hz"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "KI-DAVR-50S/50S3", "brand": "", "type": "", "params": ["Auxiliary Winding Voltage: ≤135VAC", "Sampling Winding Voltage: 17VAC", "Capacitive Protection Voltage: ≥260VAC", "EMI Suppression: built-in surge absorber (varistor)", "Voltage Regulation: <±5%", "Adjustable Voltage Range: 185-260V"], "compatible": "5kW, single-phase, brush-type", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "KI-DAVR-95S", "brand": "", "type": "", "params": ["For 10kW diesel generators", "Single-phase"], "compatible": "", "power_range": "10kW, single-phase", "current": "", "special": "", "replaces": ""}, {"model": "KI-DAVR-95S3", "brand": "", "type": "", "params": ["For Kaima or Kaipu three-phase 8kW-10kW diesel generators", "Output voltage stable within ±5%", "Smart IC chip control", "Fully automatic circuit protection", "Auto shutdown on output over-current, or output voltage 10% above rated", "Auto shutdown on overload or short-circuit", "Automatic voltage regulation better than 1%"], "compatible": "", "power_range": "10kW, three-phase", "current": "", "special": "", "replaces": ""}, {"model": "KI-DAVR-150S/150S3", "brand": "", "type": "", "params": ["For 15kW diesel generators", "Single-phase"], "compatible": "", "power_range": "15kW", "current": "", "special": "", "replaces": ""}, {"model": "KI-DAVR-250S", "brand": "", "type": "", "params": [], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "GB-110", "brand": "", "type": "", "params": ["Sensing Input: 400VAC, single-phase 2-wire", "Excitation Voltage: 20-100V DC", "Shunt Current: 20A"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "GB-130", "brand": "", "type": "", "params": ["Sensing Input: 400VAC, three-phase 3-wire", "Excitation Voltage: 20-100V DC", "Shunt Current: 8A", "Voltage Regulation: <±1% RMS"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "GB-160/170", "brand": "", "type": "", "params": ["Sensing Input: 400VAC, three-phase 3-wire", "Excitation Voltage: 20-100V DC", "Shunt Current: 8A", "Voltage Regulation: <±1% RMS", "Low-speed protection", "50Hz/60Hz adjustable"], "compatible": "GB160 for ST, GB170 for STC", "power_range": "10-50kW", "current": "", "special": "", "replaces": ""}, {"model": "GB-160/170 (alt. sensing)", "brand": "", "type": "", "params": ["Sensing Input: GB160 112/220VAC; GB170 400VAC, three-phase", "Excitation Voltage: 20-100V DC", "Shunt Current: 10A"], "compatible": "GB160 for ST, GB170 for STC", "power_range": "10-50kW", "current": "", "special": "External potentiometer", "replaces": ""}, {"model": "DX-11", "brand": "", "type": "", "params": [], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "STL-T-1/2/3", "brand": "", "type": "", "params": ["Sensing Input: 220/400VAC, single-phase 2-wire", "Excitation Voltage: 20-100VAC", "Shunt Current: STL-F-1 15A, STL-F-2 25A, STL-F-3 30-50A"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "E000-22070", "brand": "", "type": "", "params": ["Input: 500VAC (250VAC), 50/60Hz", "Output: 207VAC, 50/60Hz"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "EP200", "brand": "KUTAI", "type": "Paralleling Module", "params": [], "compatible": "Paralleling module", "power_range": "", "current": "", "special": "For use with EA04A, EA04C, EA05A, EA460, EA63-2.5, EA63-2.5S", "replaces": ""}, {"model": "J108", "brand": "KUBOTA", "type": "", "params": ["220V", "8.5-20kVA"], "compatible": "J106 / J108 AVR for KUBOTA J110/J112/J114/J116/J119, 220V generators", "power_range": "5-20kVA, 220VAC generator AVR", "current": "", "special": "Single-phase", "replaces": ""}, {"model": "J315", "brand": "KUBOTA", "type": "", "params": ["380V", "8.5-20kVA"], "compatible": "J106 / J108 AVR for KUBOTA J110/J112/J114/J116/J119, 380V generators", "power_range": "5-20kVA, 380VAC generator AVR", "current": "", "special": "Three-phase", "replaces": ""}, {"model": "SMAVC6307F", "brand": "MAIGETE", "type": "", "params": ["Input Voltage: 310-560V", "Voltage: 230V"], "compatible": "", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "AN-5-203", "brand": "", "type": "", "params": [], "compatible": "TLG-18SPY / DCA-13ESK / 15ESK / 25SPK / 25ESI / 25SPI", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "NTA-5A-2T", "brand": "", "type": "", "params": [], "compatible": "45SPI / 45ESP / 35SPK / 60SPI / 75SPI / 125SPK3 / 150SPK", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "NTA-5A-2DB", "brand": "", "type": "", "params": [], "compatible": "45ESI / 150SPM / 150ESK", "power_range": "", "current": "", "special": "", "replaces": ""}, {"model": "NTA-5E-2T", "brand": "", "type": "", "params": [], "compatible": "180SPK2 / 220SPK3 / 300SPK3 / 400SPK2 / 500SPK/M / 600SPK / 800SPK", "power_range": "", "current": "", "special": "", "replaces": ""}];
+const MATERIALS = [
+  "UK WELLWIN glass-glaze resistors, rated for continuous operation above 200°C.",
+  "EPCOS capacitors for stable temperature performance and high precision.",
+  "Imported thyristors (SCRs) for reliable, voltage-stable switching.",
+  "US-made BOURNS potentiometers — precise, wide adjustment range, low temperature drift.",
+  "Fire-resistant, heat-dissipating insulated soft rubber, built to a military-grade spec.",
+  "Heat-resistant housing that won't deform in high heat or crack in the cold.",
+  "100% imported, original-brand ICs.",
+  "State military-factory-grade resistors — high precision, wide operating range, low drift.",
+  "High-quality capacitors with consistent parameters and high reliability.",
+  "Stable operation up to 85°C, with fast response and quick voltage-drop recovery."
+];
+
+const TROUBLESHOOTING = [
+  ["No voltage build-up", "Residual voltage under 5V", "Flash the field briefly with an external DC source to re-magnetize the rotor."],
+  ["", "F+ / F− reversed", "Swap the F+ and F− connections."],
+  ["", "F+, F−, 7, 8 not connected", "Wire per the connection diagram."],
+  ["", "Fuse blown", "Rewire per the diagram and replace with a 5A / 250V fuse."],
+  ["", "Engine speed too low", "Bring engine speed up to rated speed."],
+  ["Output voltage too low", "Internal voltage set-point too low", "Turn the voltage knob clockwise until rated voltage is reached."],
+  ["", "External voltage adjustment too low", "Increase engine speed."],
+  ["", "Under-frequency protection tripped, or wrong voltage selection", "Select the correct voltage per the instruction manual."],
+  ["Output voltage too high", "Internal voltage set-point too high, or wrong voltage selection", "Turn the voltage knob counter-clockwise; check the voltage selection in the manual."],
+  ["Unstable output voltage", "Stability setting mismatched to the generator, or field resistance/voltage too low", "Re-adjust the stability control; check field winding impedance."]
+];
+
+const SETUP_STEPS = [
+  "Confirm all wiring is correct against the connection diagram before applying power.",
+  "Turn the voltage adjustment to its minimum position.",
+  "If using an external voltage potentiometer, set it to the midpoint.",
+  "Turn the stability knob to maximum.",
+  "Connect a DC voltmeter (0–110V) across F+ / F− (F+ to positive, F− to negative).",
+  "Connect an AC meter (0–300V) to the generator's AC output terminals.",
+  "Start the generator unloaded, bring it to rated speed, and confirm voltage builds at the lowest setting.",
+  "Slowly turn the voltage adjustment knob up to the desired output level.",
+  "Turn the stability knob clockwise until the output becomes unstable, then back off counter-clockwise past that point to the stable position — the best match between generator and AVR. Briefly interrupt AVR power for 1–2 seconds to confirm the voltage recovers and holds; if it doesn't, continue adjusting counter-clockwise."
+];
+
+const LOW_FREQ_NOTE = "Low-frequency (U/F) adjustment: fit the jumper link for 50Hz or 60Hz operation, start the engine and build voltage, bring engine speed down to the required trip point, then slowly turn the U/F knob until the low-frequency LED lights (factory default: 45Hz on a 50Hz unit, 55Hz on a 60Hz unit).";
+
+const SAFETY_NOTE = "Installation, wiring and adjustment should be carried out by a qualified technician, in a location protected from moisture and corrosion and inaccessible to unauthorized personnel. In normal operation the regulator's surface can exceed 60°C — do not touch the heatsink while the generator is running, and ensure the heatsink/housing is properly earthed.";
+
+// ---------- render materials ----------
+const matGrid = document.getElementById('materialsGrid');
+MATERIALS.forEach((m,i)=>{
+  const el = document.createElement('div');
+  el.className = 'material-item';
+  el.innerHTML = `<span class="idx">${String(i+1).padStart(2,'0')}</span><p>${m}</p>`;
+  matGrid.appendChild(el);
+});
+
+// ---------- render catalog ----------
+const grid = document.getElementById('catalogGrid');
+const resultCount = document.getElementById('resultCount');
+
+function searchable(m){
+  return [m.model, m.brand, m.type, m.compatible, m.replaces, m.special, (m.params||[]).join(' ')]
+    .join(' ').toLowerCase();
+}
+MODELS.forEach(m=> m._search = searchable(m));
+
+function cardHTML(m){
+  const tags = [
+    m.brand ? `<span class="tag-brand">${m.brand}</span>` : '',
+    m.type ? `<span class="tag-type">${m.type}</span>` : ''
+  ].join('');
+  const stats = [];
+  if(m.power_range) stats.push(`<div>Power range<b>${m.power_range}</b></div>`);
+  if(m.current) stats.push(`<div>Continuous current<b>${m.current}</b></div>`);
+  const paramsHTML = (m.params && m.params.length)
+    ? `<ul class="card-params">${m.params.map(p=>`<li>${p}</li>`).join('')}</ul>`
+    : '';
+  const foot = [];
+  if(m.compatible) foot.push(`<span>Fits / compatible with: <b>${m.compatible}</b></span>`);
+  if(m.special) foot.push(`<span>Special features: <b>${m.special}</b></span>`);
+  if(m.replaces) foot.push(`<span>Replaces: <b>${m.replaces}</b></span>`);
+  const footHTML = foot.length ? `<div class="card-foot">${foot.join('')}</div>` : '';
+
+  return `<div class="card">
+    <div class="card-top">
+      <div class="card-model">${m.model}</div>
+      <div class="card-tags">${tags}</div>
+    </div>
+    ${stats.length ? `<div class="card-stats">${stats.join('')}</div>` : ''}
+    ${paramsHTML}
+    ${footHTML}
+  </div>`;
+}
+
+function renderCatalog(list){
+  if(!list.length){
+    grid.innerHTML = `<div class="no-results"><div class="big">No matches</div>Try a different model number or brand — for example "Stamford" or "R450".</div>`;
+  } else {
+    grid.innerHTML = list.map(cardHTML).join('');
+  }
+  resultCount.innerHTML = `<b>${list.length}</b> regulator${list.length===1?'':'s'}`;
+}
+renderCatalog(MODELS);
+
+// ---------- search + chips ----------
+const input = document.getElementById('searchInput');
+const chipRow = document.getElementById('chipRow');
+const CHIPS = ["Stamford","Leroy-Somer","Mecc Alte","CAT (Caterpillar)","KUBOTA","parallel"];
+CHIPS.forEach(c=>{
+  const b = document.createElement('button');
+  b.className = 'chip';
+  b.type = 'button';
+  b.textContent = c;
+  b.addEventListener('click', ()=>{
+    const isActive = b.classList.contains('active');
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    input.value = isActive ? '' : c;
+    if(!isActive) b.classList.add('active');
+    doSearch();
+    document.getElementById('catalog').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+  chipRow.appendChild(b);
+});
+
+function doSearch(){
+  const q = input.value.trim().toLowerCase();
+  document.querySelectorAll('.chip').forEach(x=>{
+    x.classList.toggle('active', x.textContent.toLowerCase() === q);
+  });
+  if(!q){ renderCatalog(MODELS); return; }
+  renderCatalog(MODELS.filter(m=> m._search.includes(q)));
+}
+input.addEventListener('input', doSearch);
+
+// ---------- accordion ----------
+const accordion = document.getElementById('accordion');
+
+function makeAccItem(title, bodyHTML){
+  const item = document.createElement('div');
+  item.className = 'acc-item';
+  item.innerHTML = `<div class="acc-head"><h3>${title}</h3><span class="plus">+</span></div>
+    <div class="acc-body"><div class="acc-body-inner">${bodyHTML}</div></div>`;
+  const head = item.querySelector('.acc-head');
+  const body = item.querySelector('.acc-body');
+  head.addEventListener('click', ()=>{
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.acc-item').forEach(x=>{
+      x.classList.remove('open');
+      x.querySelector('.acc-body').style.maxHeight = null;
+    });
+    if(!isOpen){
+      item.classList.add('open');
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+  });
+  return item;
+}
+
+const generalSpecs = `<p>Voltage regulation better than ±1% on standard self-excited models. Sensing voltage (single-phase, 120/240Vac) and frequency (50/60Hz) are selected via a jumper link. A built-in circuit protects against loss of sensing voltage, and under-frequency roll-off (UFRO) provides a soft voltage build-up with an LED indicator for the under-frequency state. For parallel installations, pair with the Kutai EP200 paralleling module.</p>`;
+
+const lowFreqBody = `<p>${LOW_FREQ_NOTE}</p>
+<p style="margin-top:14px"><b style="color:var(--ink)">Voltage regulation (VOLT):</b> turn the "Voltage Control" clockwise to raise the rated value. For external adjustment, wire a 1kΩ, 1W potentiometer between terminals 1 and 2.</p>
+<p style="margin-top:10px"><b style="color:var(--ink)">Stability adjustment (STAB):</b> stabilizes the generator's output voltage; over-adjusting increases the instantaneous voltage swing under heavy load. Turn slowly until the field voltage settles at its lowest swing — that's the best stability match between the generator and the AVR.</p>`;
+
+const setupBody = `<p>${SAFETY_NOTE}</p><ol class="steps">${SETUP_STEPS.map(s=>`<li>${s}</li>`).join('')}</ol>`;
+
+const tsRows = TROUBLESHOOTING.map(r=>`<tr><td>${r[0]||''}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+const tsBody = `<table class="spec-table">
+  <thead><tr><th>Symptom</th><th>Likely cause</th><th>What to do</th></tr></thead>
+  <tbody>${tsRows}</tbody>
+</table>`;
+
+accordion.appendChild(makeAccItem("Electrical specification &amp; general function", generalSpecs));
+accordion.appendChild(makeAccItem("Commissioning: initial setup &amp; start-up", setupBody));
+accordion.appendChild(makeAccItem("Frequency and voltage adjustment (U/F, VOLT, STAB)", lowFreqBody));
+accordion.appendChild(makeAccItem("Troubleshooting table", tsBody));
+</script>
+</body>
+</html>
